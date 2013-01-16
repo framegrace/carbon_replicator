@@ -53,7 +53,6 @@ class Mirror
          connection[:socket].puts(data)
        rescue 
          puts("Socket closed to "+connection[:host]+" "+connection[:port].to_s)
-         wrongs << connection
          @disconnected.add(connection)
        end
     end
