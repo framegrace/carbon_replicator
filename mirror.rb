@@ -41,7 +41,7 @@ class Mirror
     begin
       connection.store(:socket,TCPSocket.open(connection[:host],connection[:port]))
     rescue
-      puts ("Coudn't connect to "+connection[:host])
+      puts ("Coudn't connect to "+connection[:host]+":"+connection[:port].to_s)
       return false
     end
     return true
