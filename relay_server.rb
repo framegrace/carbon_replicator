@@ -6,7 +6,7 @@ require './mirror.rb'
 
 class RelayServer
 
-  #attr_accessor :server,:consumer #,:sender_plugin
+  attr_accessor :server #,:consumer #,:sender_plugin
 
   # Continously send whatever is in the 
   # queue.
@@ -43,10 +43,12 @@ class RelayServer
   end
   
   # Object initialization and thread creation
-  def initialize( max_queue_size, server_port, batch_time, realtime, backend )
+  def initialize( max_queue_size, server_port, batch_time, realtime, backend, backend_params )
 
+    mirror_hostlist=backend_params.split(',')
     cls = Object.const_get(backend)
-    @sender_plugin = cls.new();
+    @sender_plugin = cls.new(mirror_hostlist);
+    @sender_plugin.connect()
 
     # Queue to store the data
     @data = SizedQueue.new(max_queue_size)
@@ -71,7 +73,7 @@ class RelayServer
                 ensure
 	          puts "End client"
                   client.close
-              end
+                end
             end
         }
     end
@@ -85,19 +87,16 @@ class RelayServer
         scheduled_sender(@batch_time)
       end
     end
-    @server.join
-    # Most probably will never reach here, but 
-    # just in case
-    @consumer.join
   end
 
 end
 
 # Control server run with the server
 # Any will do
-rserver=RelayServer.new( 1000, 2000 ,10 ,false,'Mirror' )
+rserver=RelayServer.new( 1000, 2000 ,10 ,false,'Mirror','localhost:2010,localhost:2011' )
 rserver.start()
 trap("SIGINT") { 
   rserver.flushQueue()
   exit
 }
+rserver.server.join
