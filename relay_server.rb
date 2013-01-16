@@ -89,13 +89,3 @@ class RelayServer
   end
 
 end
-
-# Control server run with the server
-# Any will do
-rserver=RelayServer.new( 1000, 2000 ,10 ,false,'Mirror','localhost:2010,localhost:2011' )
-rserver.start()
-trap("SIGINT") { 
-  rserver.flushQueue()
-  exit
-}
-rserver.server.join

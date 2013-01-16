@@ -43,6 +43,7 @@ if options[:backend_params].empty?
 end
 # Control server run with the server
 # Any will do
+Process.daemon
 rserver=RelayServer.new( options[:queue], options[:port] ,options[:flush_delay] ,options[:realtime] ,options[:backend], options[:backend_params] )
 rserver.start()
 trap("SIGINT") {
