@@ -48,7 +48,7 @@ class RelayServer
     mirror_hostlist=backend_params.split(',')
     cls = Object.const_get(backend)
     @sender_plugin = cls.new(mirror_hostlist);
-    @sender_plugin.connect()
+    @sender_plugin.connect_all()
 
     # Queue to store the data
     @data = SizedQueue.new(max_queue_size)

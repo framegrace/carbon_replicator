@@ -4,23 +4,35 @@ class Mirror
 
   def initialize(hosts)
     @hosts=hosts
-    @sockets=Array.new
-  end
- 
-  def connect() 
+    @connections=Array.new
     @hosts.each do |host|
        hostparams=host.split(':')
-       puts('Connecting to '+hostparams[0]+":"+hostparams[1])
-       @sockets << TCPSocket.open(hostparams[0], hostparams[1])
+       connection={ :host => hostparams[0], :port => hostparams[1] }
+       @connections << connection
+    end
+  end
+ 
+  def connect_all() 
+    @connections.each do |connection|
+      connect(connection)
+    end
+  end
+  
+  def connect(connection) 
+    puts('Connecting to '+connection[:host]+":"+connection[:port].to_s)
+    begin
+      connection.store(:socket,TCPSocket.open(connection[:host],connection[:port]))
+    rescue
+      puts ("Coudn't connect to "+connection[:host])
     end
   end
 
   def send_data( data )
-    @sockets.each do |socket|
+    @connections.each do |connection|
         begin
-           socket.puts(data)
+           connection[:socket].puts(data)
         rescue 
-           puts("Socket closed")
+           puts("Socket closed to "+connection[:host]+" "+connection[:port].to_s)
         end
     end
   end
