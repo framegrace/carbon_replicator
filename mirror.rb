@@ -3,9 +3,8 @@ require 'socket'
 class Mirror 
 
   def initialize(hosts)
-    @hosts=hosts
     @connections=Array.new
-    @hosts.each do |host|
+    hosts.each do |host|
        hostparams=host.split(':')
        connection={ :host => hostparams[0], :port => hostparams[1] }
        connect(connection)
@@ -28,8 +27,11 @@ class Mirror
        begin
          connection[:socket].puts(data)
        rescue 
-         puts("Socket closed to "+connection[:host]+" "+connection[:port].to_s)
-         connection[:socket].puts(data) if connect(connection)
+         puts "Socket closed to "+connection[:host]+" "+connection[:port].to_s
+         if connect(connection)
+            connection[:socket].puts(data)
+            puts "Reconnected to  "+connection[:host]+" "+connection[:port].to_s
+         end
        end
     end
   end
