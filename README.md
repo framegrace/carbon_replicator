@@ -7,9 +7,12 @@ Replicates graphite carbon (or any other "line" based protocol) requests to mult
 Usage: carbon_replicator [options]
     -h, --help                       Show usage 
     -p, --port port                  Bind port (2000)
+    -l, --logfile logfile            Logfile (./log/carbon_replicator.log)
+    -i, --pidfile pidfile            Pidfile (./run/carbon_replicator.log)
     -q, --queue size                 Maximum input queue size (5000)
     -f, --flush seconds              Flush delay for delayed flushing (10)
     -r, --realtime                   Do not use delayed flushing (false)
+    -s, --shutdown                   Shutdown server (false)
     -b, --backend Backend type       Type of backend (currently only "Mirror")  (Mirror)
     -P, --backend-params Parameters  Parameters for the backend. For Mirror, host:port,[host:port],... (mandatory)
 </pre>
