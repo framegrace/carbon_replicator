@@ -14,11 +14,13 @@ class Mirror
  
   def connect(connection) 
     begin
+      @@log.info "Connecting to  "+connection[:host]+" "+connection[:port].to_s
       connection.store(:socket,TCPSocket.open(connection[:host],connection[:port]))
     rescue
-      puts ("Coudn't connect to "+connection[:host]+":"+connection[:port].to_s)
+      @@log.error ("Coudn't connect to "+connection[:host]+":"+connection[:port].to_s)
       return false
     end
+    @@log.info "Connected"
     return true
   end
 
@@ -27,10 +29,10 @@ class Mirror
        begin
          connection[:socket].puts(data)
        rescue 
-         puts "Socket closed to "+connection[:host]+" "+connection[:port].to_s
+         @@log.error "Socket closed to "+connection[:host]+" "+connection[:port].to_s
          if connect(connection)
             connection[:socket].puts(data)
-            puts "Reconnected to  "+connection[:host]+" "+connection[:port].to_s
+            @@log.info "Reconnected to  "+connection[:host]+" "+connection[:port].to_s
          end
        end
     end

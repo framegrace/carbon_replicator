@@ -23,29 +23,30 @@ class RelayServer
   # avoid more gems to be installed.
   def scheduled_sender( batch_time ) 
     loop {
-        sleep(batch_time)
-        # Serves to the sender module
-        # in a thread to be as scheduler
-        # time exact as possible.
-        # We may overlap sendings but this can 
-        # be good. More threads on more work
-        Thread.new do flushQueue() end
-      }
+      sleep(batch_time)
+      # Serves to the sender module
+      # in a thread to be as scheduler
+      # time exact as possible.
+      # We may overlap sendings but this can 
+      # be good. More threads on more work
+      Thread.new do flushQueue() end
+    }
   end
   
   # Flush queue until empty
   def flushQueue() 
-      puts "Flush"
-      while (!@data.empty?) do
-          @sender_plugin.send_data(@data.pop)
-      end
-      puts "Finished"
+    done=0
+    while (!@data.empty?) do
+      done=done+1
+      @sender_plugin.send_data(@data.pop)
+    end
+    @@log.info "Flushed "+done.to_s
   end
   
   # Object initialization and thread creation
   def initialize( max_queue_size, server_port, batch_time, realtime, backend, backend_params )
-
     mirror_hostlist=backend_params.split(',')
+    @@log.info "Initializing "+backend+" backend." 
     cls = Object.const_get(backend)
     @sender_plugin = cls.new(mirror_hostlist);
 
@@ -61,29 +62,34 @@ class RelayServer
     # explore the non-blocking if needed, but task
     # is so fast that I doubt we will need it.
     @server = Thread.new do
-        tserver=TCPServer.open(@server_port)
-        puts "Starting Server loop"
-        loop {                         
-            Thread.start(tserver.accept) do |client|
-                begin
-	            while line=client.gets() do
-                        @data << line 
-                    end
-                ensure
-	          puts "End client"
-                  client.close
-                end
+      tserver=TCPServer.open(@server_port)
+      @@log.info "Starting Server loop"
+      loop {                         
+        Thread.start(tserver.accept) do |client|
+          begin
+            @@log.debug "New client"
+            while line=client.gets() do
+              @data << line 
             end
-        }
+          ensure
+            @@log.debug "End client"
+            client.close
+          end
+        end
+      }
     end
     # Consumer thread
     @consumer = Thread.new do
       if (@realtime)
-        puts "Starting realtime scheduler"
+        @@log.info "Starting realtime scheduler"
         realtime_sender
       else
-        puts "Starting delayed scheduler"
-        scheduled_sender(@batch_time)
+        @@log.info "Starting delayed scheduler"
+        begin
+          scheduled_sender(@batch_time)
+        rescue
+          @@log.error $!
+        end
       end
     end
   end
