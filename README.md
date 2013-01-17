@@ -14,6 +14,7 @@ Usage: carbon_replicator [options]
     -P, --backend-params Parameters  Parameters for the backend. For Mirror, host:port,<host:port>,... (mandatory)
 </pre>
 Example:
+
 Listens on port 2000 and replicates to localhost:2019 and localhost:2020 every 10s.
 <pre>
 ./carbon_replicator.rb -P localhost:2019,localhost:2020
