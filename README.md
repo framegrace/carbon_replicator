@@ -11,7 +11,7 @@ Usage: carbon_replicator [options]
     -f, --flush seconds              Flush delay for delayed flushing (10)
     -r, --realtime                   Do not use delayed flushing (false)
     -b, --backend Backend type       Type of backend (currently only "Mirror")  (Mirror)
-    -P, --backend-params Parameters  Parameters for the backend. For Mirror, host:port,<host:port>,... (mandatory)
+    -P, --backend-params Parameters  Parameters for the backend. For Mirror, host:port,[host:port],... (mandatory)
 </pre>
 Examples:
 
