@@ -13,7 +13,7 @@ Usage: carbon_replicator [options]
     -b, --backend Backend type       Type of backend (currently only "Mirror")  (Mirror)
     -P, --backend-params Parameters  Parameters for the backend. For Mirror, host:port,<host:port>,... (mandatory)
 </pre>
-Example:
+Examples:
 
 Listens on port 2000 and replicates to localhost:2019 and localhost:2020 every 10s.
 <pre>
