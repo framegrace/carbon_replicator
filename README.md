@@ -11,6 +11,7 @@ Usage: carbon_replicator [options]
     -i, --pidfile pidfile            Pidfile (./run/carbon_replicator.log)
     -q, --queue size                 Maximum input queue size (5000)
     -f, --flush seconds              Flush delay for delayed flushing (10)
+    -d, --daemonize                  Daemonize server
     -r, --realtime                   Do not use delayed flushing (false)
     -s, --shutdown                   Shutdown server (false)
     -b, --backend Backend type       Type of backend (currently only "Mirror")  (Mirror)
